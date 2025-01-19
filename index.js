@@ -12,17 +12,31 @@ function displayHelp() {
     --help       Show help message
     --length     Specify the length of the password (default: 8)
     --uppercase  Include uppercase letters in the password
+    --numbers    Include numbers in the password
+    --symbols    Include symbols in the password
 
   Example:
-    node index.js --length 12 --uppercase
+    node index.js --length 12 --uppercase --numbers --symbols
   `);
 }
 
 // Helper function to generate a password
 function generatePassword(length, options) {
   let chars = 'abcdefghijklmnopqrstuvwxyz'; // Lowercase letters
+
   if (options.uppercase) {
-    chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Add uppercase letters if flag is set
+    chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Add uppercase letters
+  }
+  if (options.numbers) {
+    chars += '0123456789'; // Add numbers
+  }
+  if (options.symbols) {
+    chars += '!@#$%^&*()_+[]{}|;:,.<>?'; // Add symbols
+  }
+
+  if (chars.length === 0) {
+    console.error('No character set selected! Please use at least one flag to include characters.');
+    process.exit(1);
   }
 
   let password = '';
@@ -35,7 +49,7 @@ function generatePassword(length, options) {
 
 // Parse command-line arguments
 let length = 8; // Default length
-let options = { uppercase: false };
+let options = { uppercase: false, numbers: false, symbols: false };
 
 if (args.includes('--help')) {
   displayHelp();
@@ -54,6 +68,14 @@ if (args.includes('--length')) {
 
 if (args.includes('--uppercase')) {
   options.uppercase = true;
+}
+
+if (args.includes('--numbers')) {
+  options.numbers = true;
+}
+
+if (args.includes('--symbols')) {
+  options.symbols = true;
 }
 
 // Generate and print the password
